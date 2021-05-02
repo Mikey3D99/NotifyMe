@@ -2,10 +2,10 @@ package com.company;
 
 //this class handles multiple clients and their messages
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
+import java.io.*;
 import java.net.Socket;
+import java.nio.Buffer;
+import java.nio.charset.StandardCharsets;
 
 public class ClientSocketHandler extends Thread {
 
@@ -19,13 +19,23 @@ public class ClientSocketHandler extends Thread {
     private void handleClientSocket() throws IOException, InterruptedException {
 
         //get input and output from the socket
+
         OutputStream socketsOutputStream = clientSocket.getOutputStream();
         InputStream socketsInputStream = clientSocket.getInputStream();
 
-        //do stuff
-        socketsOutputStream.write("Test".getBytes());
-        Thread.sleep(2000);
-        socketsOutputStream.write("chuj".getBytes());
+        //get input from client
+
+        BufferedReader myReader = new BufferedReader( new InputStreamReader(socketsInputStream));
+        String userInput;
+
+        while((userInput = myReader.readLine()) != null){
+            if(userInput.equals("quit")){
+                break;
+            }
+            String msg = "You typed: " + userInput + "\n";
+            System.out.println(userInput);
+            socketsOutputStream.write(msg.getBytes());
+        }
 
         //after doing some operations on the socket, close it...
         clientSocket.close();

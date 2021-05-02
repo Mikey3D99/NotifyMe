@@ -7,24 +7,17 @@ import java.nio.charset.StandardCharsets;
 
 public class Server {
 
-    private int port;
-
-    Server(int port){
-        this.port = port;
-    }
 
     public static void main(String[] args)  {
-
-        Server myServer = new Server(7777);
-
+        int port = 7777;
         try {
-
-            //initiate the server
-            ServerSocket serverSocket = new ServerSocket(myServer.port);
-
-            //make the server listen to all clients
+            ServerSocket serverSocket = new ServerSocket(port);
             while(true){
                 Socket clientSocket = serverSocket.accept();
+                OutputStream outputStream = clientSocket.getOutputStream();
+
+                outputStream.write("About to connect to the client...".getBytes(StandardCharsets.UTF_8));
+
                 ClientSocketHandler myHandler = new ClientSocketHandler(clientSocket);
                 myHandler.start();
             }
