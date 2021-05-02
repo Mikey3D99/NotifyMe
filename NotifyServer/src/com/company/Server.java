@@ -7,11 +7,10 @@ import java.nio.charset.StandardCharsets;
 
 public class Server {
 
-
     public static void main(String[] args)  {
-        int port = 7777;
+        ServerSocket serverSocket = null;
         try {
-            ServerSocket serverSocket = new ServerSocket(port);
+            serverSocket = new ServerSocket(7777);
             while(true){
                 Socket clientSocket = serverSocket.accept();
                 OutputStream outputStream = clientSocket.getOutputStream();
@@ -20,9 +19,20 @@ public class Server {
 
                 ClientSocketHandler myHandler = new ClientSocketHandler(clientSocket);
                 myHandler.start();
+                System.out.println("Ty cwelu jebanyt");
             }
         } catch (IOException e) {
             e.printStackTrace();
+        }
+        finally {
+            if(serverSocket != null){
+                try{
+                    serverSocket.close();
+                }
+                catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
         }
     }
 

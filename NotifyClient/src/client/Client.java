@@ -17,35 +17,43 @@ public class Client {
             Socket clientSocket = new Socket("localhost", 7777);
             System.out.println("Client started");
 
-            //if the data format is incorrect, type it
-            myClient.sendDataToServer(clientSocket, "Enter a notification:\n", false);
-            while(true){
-                try{
-                    myClient.sendDataToServer(clientSocket, "Enter time of the notification:\n", true);
-                    break;
 
-                }catch(IOException e){
-                    System.out.println("Invalid date format, try again...");
+            while(true){
+                //if the data format is incorrect, type it
+                myClient.sendDataToServer(clientSocket, "Enter a notification:\n", false);
+                while(true){
+                    try{
+                        myClient.sendDataToServer(clientSocket, "Enter time of the notification:\n", true);
+                        break;
+
+                    }catch(IOException e){
+                        System.out.println("Invalid date format, try again...");
+                    }
                 }
+
+
+                //get the message back from the server
+                BufferedReader serverOutput = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
+                System.out.println(serverOutput.readLine());
+
+                if(!myClient.sendDataToServer(clientSocket, "Continue?(yes to continue):\n", false)){
+                    break;
+                }
+
+
             }
 
-            //get the message back from the server
-            BufferedReader serverOutput = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
-            System.out.println(serverOutput.readLine());
-
-
-        } catch (UnknownHostException e) {
-            e.printStackTrace();
         } catch (IOException e) {
             e.printStackTrace();
         }
 
     }
 
-    private void sendDataToServer(Socket clientSocket, String prompt, boolean isDate) throws IOException {
+    private boolean sendDataToServer(Socket clientSocket, String prompt, boolean isDate) throws IOException {
 
         BufferedReader userInput = new BufferedReader(new InputStreamReader(System.in));
         String message;
+        boolean ret = true;
 
         if (isDate) {
             //input
@@ -58,6 +66,13 @@ public class Client {
                 throw new IOException();
             }
         }
+        else if(prompt.equals("Continue?(yes to continue):\n")){
+            System.out.println(prompt);
+            message = userInput.readLine();
+            if(!message.equals("yes")){
+                ret = false;
+            }
+        }
         else{
             //input
             System.out.println(prompt);
@@ -67,6 +82,7 @@ public class Client {
         //output the message
         PrintWriter out = new PrintWriter(clientSocket.getOutputStream(), true);
         out.println(message);
+        return ret;
     }
 
 
