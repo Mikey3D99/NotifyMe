@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.*;
+import java.util.InputMismatchException;
 
 public class Client {
 
@@ -11,27 +12,27 @@ public class Client {
     public static void main(String[] args){
 
         try{
-            int port = 7777;
-            Socket clientSocket = new Socket("localhost", port);
+            Client myClient = new Client();
+
+            Socket clientSocket = new Socket("localhost", 7777);
             System.out.println("Client started");
 
-            BufferedReader userNotification = new BufferedReader(new InputStreamReader(System.in));
-            System.out.println("Enter a notification:\n");
-            String message = userNotification.readLine();
+            //if the data format is incorrect, type it
+            myClient.sendDataToServer(clientSocket, "Enter a notification:\n", false);
+            while(true){
+                try{
+                    myClient.sendDataToServer(clientSocket, "Enter time of the notification:\n", true);
+                    break;
 
-            BufferedReader userTime = new BufferedReader(new InputStreamReader(System.in));
-            System.out.println("Enter time:\n");
-            String timeToNotify = userTime.readLine();
+                }catch(IOException e){
+                    System.out.println("Invalid date format, try again...");
+                }
+            }
 
-
-            PrintWriter outMessage = new PrintWriter(clientSocket.getOutputStream(), true);
-            outMessage.println(message);
-
-            PrintWriter outTime = new PrintWriter(clientSocket.getOutputStream(), true);
-            outTime.println(timeToNotify);
-
+            //get the message back from the server
             BufferedReader serverOutput = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
             System.out.println(serverOutput.readLine());
+
 
         } catch (UnknownHostException e) {
             e.printStackTrace();
@@ -40,4 +41,40 @@ public class Client {
         }
 
     }
+
+    private void sendDataToServer(Socket clientSocket, String prompt, boolean isDate) throws IOException {
+
+        BufferedReader userInput = new BufferedReader(new InputStreamReader(System.in));
+        String message;
+
+        if (isDate) {
+            //input
+            System.out.println(prompt);
+            message = userInput.readLine();
+            try{
+                validateTime(message);
+            }
+            catch(InputMismatchException e){
+                throw new IOException();
+            }
+        }
+        else{
+            //input
+            System.out.println(prompt);
+            message = userInput.readLine();
+        }
+
+        //output the message
+        PrintWriter out = new PrintWriter(clientSocket.getOutputStream(), true);
+        out.println(message);
+    }
+
+
+    //to do : add my custom exception for this
+    private void validateTime(String hour) throws InputMismatchException {
+        if(!hour.matches("^(0[0-9]|1[0-9]|2[0-3]):[0-5][0-9]$")){
+            throw new InputMismatchException("Incorrect hour format");
+        }
+    }
+
 }

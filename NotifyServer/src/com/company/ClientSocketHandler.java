@@ -24,19 +24,20 @@ public class ClientSocketHandler extends Thread {
         InputStream socketsInputStream = clientSocket.getInputStream();
 
         //get input from client
-
         BufferedReader myReader = new BufferedReader( new InputStreamReader(socketsInputStream));
-        String userInput;
+        String notificationInput;
+        String timeInput;
 
-        while((userInput = myReader.readLine()) != null){
-            if(userInput.equals("quit")){
-                break;
-            }
-            String msg = "You typed: " + userInput + "\n";
-            System.out.println(userInput);
+        if((notificationInput = myReader.readLine()) != null){
+            String msg = "You typed: " + notificationInput + "\n";
+            System.out.println(msg);
             socketsOutputStream.write(msg.getBytes());
         }
-
+        if((timeInput = myReader.readLine()) != null){
+            String msg = "You typed: " + timeInput + "\n";
+            System.out.println(msg);
+        }
+        
         //after doing some operations on the socket, close it...
         clientSocket.close();
     }

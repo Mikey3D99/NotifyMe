@@ -1,0 +1,8 @@
+1. klient prosi o podanie notyfikacji oraz godziny
+2. klient wysyla notyfikacje i weryfikuje godzine, dopoki nie bedzie poprawna, dopoty nie bedzie wyslana na serwer
+3. serwer otrzymuje juz dobre dane, wiec musi zakolejkowac - ogarnac jaka to godzina, dac godzine jako klucz, wiadomosc jako wartosc,
+wtedy w treemapie notyfikacje beda w odpowiedniej kolejnosci, potem serwer bierze pierwsza notyfikacje w kolejce
+i wysyla ponownie do klienta o odpowiedniej porze
+4. klient wyswietla notyfikacje
+
+DOPISZ EXCEPTION DO WALIDACJI!!!
