@@ -6,3 +6,21 @@ i wysyla ponownie do klienta o odpowiedniej porze
 4. klient wyswietla notyfikacje
 
 DOPISZ EXCEPTION DO WALIDACJI!!!
+
+1.dopisac exception
+2. poprawic pobieranie daty i godziny (wykorzystaj Calendar!)
+3. poprawic delay
+4. clean up the code
+
+Napisz program sieciowy (aplikacja kliencka + aplikacja serwerowa) sluzacy do kolejkowania i wysylania notyfikacji.
+Program powinien obslugiwac domyslne wyjatki oraz implementacje przynajmniej jednego wyjatku zwiazanego z walidacja tresci wprowadzanych przez uzytkownika w aplikacji klienckiej.
+
+Funkcje aplikacji klienckiej:
+- Polaczenie z serwerem wraz z walidacja i obsluga wyjatkow
+- Pobranie od uzytkownika tresci notyfikacji (wiadomosc tekstowa) oraz czasu odeslania notyfikacji do uzytkownika
+- Wyswietlenie otrzymanej przez serwer notyfikacji
+
+Funkcje aplikacji serwerowej:
+- Obsluga wielu klientow jednoczesnie
+- Przyjmowanie wyslanych z aplikacji klienckiej notyfikacji i kolejkowanie ich na serwerze
+- Wysylanie notyfikacji do klienta ktory ja zapisal o podanym przez niego czasie

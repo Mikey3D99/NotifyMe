@@ -18,9 +18,12 @@ public class Client {
             System.out.println("Client started");
 
 
+
+            int notificationNumber = 0;
             while(true){
                 //if the data format is incorrect, type it
                 myClient.sendDataToServer(clientSocket, "Enter a notification:\n", false);
+                notificationNumber++;
                 while(true){
                     try{
                         myClient.sendDataToServer(clientSocket, "Enter time of the notification:\n", true);
@@ -31,17 +34,21 @@ public class Client {
                     }
                 }
 
-
-                //get the message back from the server
-                BufferedReader serverOutput = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
-                System.out.println(serverOutput.readLine());
-
                 if(!myClient.sendDataToServer(clientSocket, "Continue?(yes to continue):\n", false)){
                     break;
                 }
 
-
             }
+            String notification;
+
+            int i = 0;
+            while(i < notificationNumber){
+                BufferedReader serverOutput = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
+                //get the message back from the server
+                if((notification = serverOutput.readLine()) != null) System.out.println(notification);
+                i++;
+            }
+
 
         } catch (IOException e) {
             e.printStackTrace();

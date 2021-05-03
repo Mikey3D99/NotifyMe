@@ -46,17 +46,13 @@ public class ClientSocketHandler extends Thread {
         String doContinue;
 
         while(true){
+
             if((notificationInput = myReader.readLine()) != null){
-                String msg = "Notification: " + notificationInput + "\n";
-                System.out.println(msg);
-                socketsOutputStream.write(msg.getBytes());
             }
 
             //after receiving the time to notify, add the notification to the TreeMap, and check if the order is correct
 
             if((timeInput = myReader.readLine()) != null){
-                String msg = "You typed: " + timeInput + "\n";
-                System.out.println(msg);
             }
             assert timeInput != null;
             try{
@@ -75,13 +71,27 @@ public class ClientSocketHandler extends Thread {
             }
         }
 
-        /*for(Map.Entry<Time, String> entry : this.notificationQueue.entrySet()){
-            System.out.println("Key: " + entry.getKey() + ". Value: " + entry.getValue());
-        }*/
+        //after receiving all of the data, queue it
+        for(Map.Entry<Time, String> entry : this.notificationQueue.entrySet()){
+
+            socketsOutputStream.flush();
+
+            Time toDelay = entry.getKey();
+            String toSend = entry.getValue();
+            System.out.println(toDelay.calculateThreadDelay(toDelay));
+
+            Thread.sleep(3000);
+
+            PrintWriter out = new PrintWriter(clientSocket.getOutputStream(), true);
+            out.println(toSend);
+
+        }
 
         //after doing some operations on the socket, close it...
         clientSocket.close();
     }
+
+
 
     //override method from parent
     @Override
