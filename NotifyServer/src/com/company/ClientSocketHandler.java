@@ -1,20 +1,22 @@
 package com.company;
 
-//this class handles multiple clients and their messages
 
 import java.io.*;
 import java.net.Socket;
 import java.util.*;
 
-public class ClientSocketHandler extends Thread {
+
+public class ClientSocketHandler extends Thread {   //this class handles multiple clients and their messages
 
     private final Socket clientSocket;
     private final TreeMap<Calendar, String> notificationQueue;
+    private final DataTimeHandler dataTimeHandler;
 
     //constructor
     ClientSocketHandler(Socket newSocket) {
         this.clientSocket = newSocket;
         this.notificationQueue = new TreeMap<>();
+        this.dataTimeHandler = new DataTimeHandler();
     }
 
     private void handleClientSocket() throws IOException, InterruptedException, NumberFormatException {
@@ -32,24 +34,24 @@ public class ClientSocketHandler extends Thread {
 
         while(true){
 
-            if((notificationInput = myReader.readLine()) != null){
-            }
+
+            notificationInput = myReader.readLine(); // get the message string
+            assert notificationInput != null;
+
+            timeInput = myReader.readLine(); // get the time and date string
+            assert timeInput != null;
 
             //after receiving the time to notify, add the notification to the TreeMap, and check if the order is correct
-
-            if((timeInput = myReader.readLine()) != null){
-            }
-            assert timeInput != null;
             try{
                 // add key and value to the map
-                Calendar timeToNotify = parseToCalendarDate(timeInput);
+                Calendar timeToNotify = dataTimeHandler.parseToCalendarDate(timeInput);
 
 
                 System.out.println(timeInput);
                 this.notificationQueue.put(timeToNotify, notificationInput);
 
             }catch(Exception e) {
-                throw new IOException("blad");
+                throw new IOException("error occurred");
             }
 
             if((doContinue = myReader.readLine()) != null){
@@ -58,18 +60,8 @@ public class ClientSocketHandler extends Thread {
                 }
             }
         }
-      //  for(Map.Entry<Calendar, String> entry : this.notificationQueue.entrySet()){
-     //       System.out.println( "Note: " +  entry.getValue() + " Time: " + entry.getKey().getTime() + " Time between now and the time: " + calculateDelay(entry.getKey()));
-     //   }
-        sendTheMessageBack();
-        //after doing some operations on the socket, close it...
-        clientSocket.close();
-    }
-
-    private long calculateDelay(Calendar date){
-
-        Calendar currentDate = Calendar.getInstance();
-        return date.getTimeInMillis() - currentDate.getTimeInMillis();
+        sendTheMessageBack(); // send back the notifications ...
+        clientSocket.close(); //after doing some operations on the socket, close it...
     }
 
     private void sendTheMessageBack() throws IOException, InterruptedException {
@@ -80,11 +72,12 @@ public class ClientSocketHandler extends Thread {
             Calendar toDelay = entry.getKey();
             String toSend = entry.getValue();
 
-            System.out.println( "Note: " +  entry.getValue() + " Time: " + entry.getKey().getTime() + " Time between now and the time: " + calculateDelay(entry.getKey()));
+            System.out.println( "Note: " +  entry.getValue() + " Time: "
+                    + entry.getKey().getTime() + " Time between now and the time: " + dataTimeHandler.calculateDelay(entry.getKey()));
 
             // if the difference is negative, just continue, because the time for the notification to be sent has already expired
             try{
-                Thread.sleep(calculateDelay(toDelay));
+                Thread.sleep(dataTimeHandler.calculateDelay(toDelay));
             }catch( IllegalArgumentException e){
                 System.out.println("This notification already expired!");
                 continue;
@@ -97,99 +90,7 @@ public class ClientSocketHandler extends Thread {
         }
     }
 
-
-    /*  Timer timer = new Timer();
-   TimerTask sendTheMessageBack = new TimerTask() { //anonymous class to depict a task
-
-       @Override
-       public void run() {
-           try {
-               PrintWriter out;
-               out = new PrintWriter(clientSocket.getOutputStream(), true);
-               out.println(toSend);
-           } catch (IOException e) {
-               System.out.println("Error while trying to send back the message!");
-           }
-       }
-   };
-           //timer.schedule(sendTheMessageBack, toDelay.getTime());
-
-
-*/
-    private Calendar parseToCalendarDate(String dateTime) throws InvalidDateFormatException{
-        int year;
-        int month;
-        int day;
-        int hour;
-        int minute;
-
-        // date and time format: 2021-12-1 14:14
-        String[] result = dateTime.split(" "); //divide into date and time
-
-        String date = result[0];
-        String time = result[1];
-
-        String[] dateData = date.split("-");
-        String[] timeData = time.split(":");
-
-
-        try {
-            // parse date to int
-            year = Integer.parseInt(dateData[0]);
-            month = Integer.parseInt(dateData[1]);
-            day = Integer.parseInt(dateData[2]);
-
-            // parse time to int
-            hour = Integer.parseInt(timeData[0]);
-            minute = Integer.parseInt(timeData[1]);
-        }catch(NumberFormatException e){
-            throw new InvalidDateFormatException("Error while parsing integers!");
-        }
-
-        return setCalendarDate(year, month, day, hour, minute);
-    }
-
-    private Calendar setCalendarDate( int year, int month, int day, int hour, int minute) throws InvalidDateFormatException {
-
-        //check if the date is valid, and if not - do not throw further
-        try{
-            validateDate(year, month, day, hour, minute);
-
-        }catch(InvalidDateFormatException e){
-            System.out.println("Invalid date while setting Calendar date!");
-        }
-
-        Calendar date = Calendar.getInstance();
-        date.set(year, month - 1, day, hour, minute, 0); //month - 1 because index starts at 0, months at 1
-
-        return date;
-    }
-
-    private void validateDate(int year, int month, int day, int hour, int minute) throws InvalidDateFormatException{
-
-        if(year < 0 || year > 3000
-                || month > 12 || month < 1
-                || day > 31 || day < 1
-                || hour > 23 || hour < 0
-                || minute > 60 || minute < 0){
-            throw new InvalidDateFormatException("Date out of bounds!");
-        }
-
-        boolean isLeapYear = (year % 2 == 0 && year % 100 == 0 && year % 400 == 0);
-
-        //check leap year
-        if( isLeapYear && month == 2 && day > 29){
-            throw new InvalidDateFormatException("Leap year error!");
-        }
-
-        //check non-leap year
-        if( !isLeapYear && month == 2 && day > 28){
-            throw new InvalidDateFormatException("Non-leap year error!");
-        }
-
-    }
-
-    //override method from parent
+    //override run method from parent
     @Override
     public void run() {
         try {
