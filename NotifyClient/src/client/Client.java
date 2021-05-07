@@ -16,37 +16,44 @@ public class Client {
         try{
             Client myClient = new Client();
 
-
             Socket clientSocket = new Socket("localhost", 7777);
             System.out.println("Client started");
 
-            int numberOfNotifications = 0;
+            int numberOfNotifications = myClient.sendNotifications(myClient,  clientSocket); // send notifications
 
-            while(true){
-                //if the data format is incorrect, insert it again
-                myClient.sendDataToServer(clientSocket, "Enter a notification:\n", false);
-                numberOfNotifications++;
-                while(true){
-                    try{
-                        myClient.sendDataToServer(clientSocket, "Enter time of the notification:\n", true);
-                        break;
-
-                    }catch(IOException e){
-                        System.out.println("Invalid date format, try again...");
-                    }
-                }
-
-                if(!myClient.sendDataToServer(clientSocket, "Continue?(yes to continue):\n", false)){
-                    break;
-                }
-
-            }
-
-            myClient.receiveNotifications(numberOfNotifications, clientSocket);
+            myClient.receiveNotifications(numberOfNotifications, clientSocket); // receive them with desired delay
 
         } catch (IOException e) {
             e.printStackTrace();
         }
+
+    }
+
+    private int sendNotifications( Client myClient, Socket clientSocket) throws IOException {
+
+        int numberOfNotifications = 0;
+
+        while(true){ // send notifications until
+
+            myClient.sendDataToServer(clientSocket, "Enter a notification:\n", false); //if the data format is incorrect, try it again
+            numberOfNotifications++;
+
+            while(true){
+                try{
+                    myClient.sendDataToServer(clientSocket, "Enter the time of the notification:\n", true);
+                    break;
+
+                }catch(IOException e){
+                    System.out.println("Invalid date format, try again...");
+                }
+            }
+
+            if(!myClient.sendDataToServer(clientSocket, "Continue?(yes to continue):\n", false)){
+                break;
+            }
+
+        }
+        return numberOfNotifications;
 
     }
 
@@ -73,14 +80,13 @@ public class Client {
         boolean ret = true;
 
         if (isDate) {
-            //input
-            System.out.println(prompt);
+            System.out.println(prompt); //input
             message = userInput.readLine();
             try{
                 validateTime(message);
             }
             catch(InvalidDateException e){
-                throw new IOException();
+                throw new IOException("Could not validate the time passed by user");
             }
         }
         else if(prompt.equals("Continue?(yes to continue):\n")){
@@ -91,8 +97,7 @@ public class Client {
             }
         }
         else{
-            //input
-            System.out.println(prompt);
+            System.out.println(prompt); //input
             message = userInput.readLine();
         }
 
