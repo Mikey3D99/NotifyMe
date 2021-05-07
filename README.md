@@ -1,3 +1,5 @@
+
+
 # NotifyMe
 Client-Server notification app, written in Java
 
@@ -17,7 +19,7 @@ Client-Server notification app, written in Java
 #### * Server side app sends notifications in the correct order :white_check_mark:
 #### * Server side app verifies data passed bu the client :white_check_mark:
 
+## Example usage:
 
-
-
+![C_S_1](https://user-images.githubusercontent.com/78366670/117467388-edb2da80-af53-11eb-8e5b-edcce287912a.png)
 
