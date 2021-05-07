@@ -23,7 +23,12 @@ public class Client {
 
             myClient.receiveNotifications(numberOfNotifications, clientSocket); // receive them with desired delay
 
-        } catch (IOException e) {
+        }
+        catch(ConnectException e){
+            System.out.println("Server is not running! ");
+        }
+        catch (IOException e) {
+            System.out.println("Something wnet terribly wrong!");
             e.printStackTrace();
         }
 

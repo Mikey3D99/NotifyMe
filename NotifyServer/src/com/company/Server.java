@@ -11,6 +11,7 @@ public class Server {
         ServerSocket serverSocket = null;
         try {
             serverSocket = new ServerSocket(7777);
+            System.out.println("Server is listening...");
             while(true){
                 Socket clientSocket = serverSocket.accept();
                 OutputStream outputStream = clientSocket.getOutputStream();
