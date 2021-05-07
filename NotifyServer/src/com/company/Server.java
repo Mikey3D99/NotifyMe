@@ -15,7 +15,7 @@ public class Server {
                 Socket clientSocket = serverSocket.accept();
                 OutputStream outputStream = clientSocket.getOutputStream();
 
-                outputStream.write("About to connect to the client...".getBytes(StandardCharsets.UTF_8));
+                outputStream.write("About to connect to the client...\n".getBytes(StandardCharsets.UTF_8));
 
                 ClientSocketHandler myHandler = new ClientSocketHandler(clientSocket);
                 myHandler.start();
