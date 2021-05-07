@@ -30,9 +30,10 @@ Client-Server notification app, written in Java
 #### 3. Now the client waits for the notification to be sent from the server
 
 #### 4. Client receives the notification!
+![C_S_3](https://user-images.githubusercontent.com/78366670/117468132-abd66400-af54-11eb-84a9-9e4e84aefa83.png)
 
 #### 5. You can run multiple client app instances at a time! 
-![C_S_3](https://user-images.githubusercontent.com/78366670/117468132-abd66400-af54-11eb-84a9-9e4e84aefa83.png)
+![C_S_4](https://user-images.githubusercontent.com/78366670/117468616-269f7f00-af55-11eb-8c47-c078dd4f0702.png)
 
 
 
