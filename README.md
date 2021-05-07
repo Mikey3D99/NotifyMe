@@ -24,7 +24,7 @@ Client-Server notification app, written in Java
 #### 1. Run the server, server is listening to incoming connections...
 ![C_S_1](https://user-images.githubusercontent.com/78366670/117467388-edb2da80-af53-11eb-8e5b-edcce287912a.png)
 
-#### 2. Run the client application and send your notfication
+#### 2. Run the client application and send your notfication / notifications
 ![C_S_2](https://user-images.githubusercontent.com/78366670/117467885-674ac880-af54-11eb-82bf-ed555e9728e7.png)
 
 #### 3. Now the client waits for the notification to be sent from the server
