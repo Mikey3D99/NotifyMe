@@ -27,3 +27,4 @@ hs_err_pid*
 NotifyClient.iml
 NotifyServer.iml
 out
+src/client/opis.txt
