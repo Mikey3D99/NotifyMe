@@ -12,8 +12,6 @@ DOPISZ EXCEPTION DO WALIDACJI!!!
 3. poprawic delay
 4. clean up the code
 
-Napisz program sieciowy (aplikacja kliencka + aplikacja serwerowa) sluzacy do kolejkowania i wysylania notyfikacji.
-Program powinien obslugiwac domyslne wyjatki oraz implementacje przynajmniej jednego wyjatku zwiazanego z walidacja tresci wprowadzanych przez uzytkownika w aplikacji klienckiej.
 
 Funkcje aplikacji klienckiej:
 - Polaczenie z serwerem wraz z walidacja i obsluga wyjatkow
