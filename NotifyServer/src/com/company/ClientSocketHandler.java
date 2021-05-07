@@ -1,6 +1,4 @@
 package com.company;
-
-
 import java.io.*;
 import java.net.Socket;
 import java.util.*;
@@ -22,8 +20,6 @@ public class ClientSocketHandler extends Thread {   //this class handles multipl
     private void handleClientSocket() throws IOException, InterruptedException, NumberFormatException {
 
         //get input and output from the socket
-
-        OutputStream socketsOutputStream = clientSocket.getOutputStream();
         InputStream socketsInputStream = clientSocket.getInputStream();
 
         //get input from client
@@ -34,24 +30,20 @@ public class ClientSocketHandler extends Thread {   //this class handles multipl
 
         while(true){
 
-
             notificationInput = myReader.readLine(); // get the message string
             assert notificationInput != null;
 
             timeInput = myReader.readLine(); // get the time and date string
             assert timeInput != null;
 
-            //after receiving the time to notify, add the notification to the TreeMap, and check if the order is correct
-            try{
-                // add key and value to the map
+            try{   //after receiving the time to notify, add the notification to the TreeMap, and check if the order is correct
+
                 Calendar timeToNotify = dataTimeHandler.parseToCalendarDate(timeInput);
-
-
                 System.out.println(timeInput);
-                this.notificationQueue.put(timeToNotify, notificationInput);
+                this.notificationQueue.put(timeToNotify, notificationInput); // adds key and value to the map
 
             }catch(Exception e) {
-                throw new IOException("error occurred");
+                throw new IOException("error occurred while parsing data");
             }
 
             if((doContinue = myReader.readLine()) != null){
@@ -60,6 +52,7 @@ public class ClientSocketHandler extends Thread {   //this class handles multipl
                 }
             }
         }
+
         sendTheMessageBack(); // send back the notifications ...
         clientSocket.close(); //after doing some operations on the socket, close it...
     }
