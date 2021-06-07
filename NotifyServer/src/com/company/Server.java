@@ -20,6 +20,7 @@ public class Server {
 
                 ClientSocketHandler myHandler = new ClientSocketHandler(clientSocket);
                 myHandler.start();
+                System.out.println("Ty cwelu jebanyt");
             }
         } catch (IOException e) {
             e.printStackTrace();
